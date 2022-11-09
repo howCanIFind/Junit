@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest // DB와 관련된 컴포넌트만 메모리에 로딩
@@ -33,7 +35,15 @@ public class BookRepositoryTest {
     }
 
     // 2. 책 목록 보기
+    @Test
+    public void 책목록보기_test() {
+        // given
 
+        // when
+        List<Book> books = bookRepository.findAll();
+        // then
+        System.out.println(books.size());
+    }
     // 3. 책 한건 보기
 
     // 4. 책 수정
