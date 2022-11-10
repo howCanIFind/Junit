@@ -100,5 +100,23 @@ public class BookRepositoryTest {
     // 테스트 메서드가 하나 실행 후 @Test 의 Transactional() 어노테이션을 통헤 데이터가 초기화된다.
     // -> 하지만 primary key auto_increment 값은 초기화가 되지 않는다.
 
+    // 1. junit, 겟인데어
     // 5. 책 수정
+    @Sql("classpath:db/tableInit.sql")
+    @Test
+    public void 책수정_test() {
+        // given
+        long id = 1L;
+        String title = "junit5";
+        String author = "메타코딩";
+        Book book = new Book(id, title, author);
+
+        // when
+        Book bookPS = bookRepository.save(book);
+
+        // then
+        assertEquals(id, bookPS.getId());
+        assertEquals(title, bookPS.getTitle());
+        assertEquals(author, bookPS.getAuthor());
+    }
 }
