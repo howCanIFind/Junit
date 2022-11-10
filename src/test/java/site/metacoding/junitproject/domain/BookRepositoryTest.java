@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,6 +68,7 @@ public class BookRepositoryTest {
     } // 트랜잭션 종료 (저장된 데이터를 초기화함)
 
     // 3. 책 한건 보기
+    @Sql("classpath:db/tableInit.sql")
     @Test
     public void 책한건보기_test() {
         // given
@@ -81,7 +83,22 @@ public class BookRepositoryTest {
         assertEquals(author, booksPS.getAuthor());
     } // 트랜잭션 종료 (저장된 데이터를 초기화함)
 
-    // 4. 책 수정
+    // 4. 책 삭제
+    @Sql("classpath:db/tableInit.sql")
+    @Test
+    public void 책삭제_test() {
+        // given
+        Long id = 1L;
 
-    // 5. 책 삭제제
+        // when
+        bookRepository.deleteById(id);
+
+        // then
+        assertFalse(bookRepository.findById(id).isPresent());
+    }
+    // 테스트 메서드 3개가 있을 때 순서 보장이 안됨 -> Order() 어노테이션 사용
+    // 테스트 메서드가 하나 실행 후 @Test 의 Transactional() 어노테이션을 통헤 데이터가 초기화된다.
+    // -> 하지만 primary key auto_increment 값은 초기화가 되지 않는다.
+
+    // 5. 책 수정
 }
