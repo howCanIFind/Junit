@@ -1,6 +1,5 @@
 package site.metacoding.junitproject.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,11 +8,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import site.metacoding.junitproject.domain.Book;
 import site.metacoding.junitproject.domain.BookRepository;
 import site.metacoding.junitproject.util.MailSender;
-import site.metacoding.junitproject.web.dto.BookRespDto;
-import site.metacoding.junitproject.web.dto.BookSaveReqDto;
+import site.metacoding.junitproject.web.dto.response.BookRespDto;
+import site.metacoding.junitproject.web.dto.request.BookSaveReqDto;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
