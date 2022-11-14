@@ -30,6 +30,7 @@ public class BookApiController { // 컴포지션 = has 관계
     public ResponseEntity<?> saveBook(@RequestBody @Valid BookSaveReqDto bookSaveReqDto, BindingResult bindingResult) {
         BookRespDto bookRespDto = bookService.책등록하기(bookSaveReqDto);
 
+        // AOP 처리하는게 제일 좋음
         if (bindingResult.hasErrors()) {
             Map<String, String> errorMap = new HashMap<>();
             for (FieldError fe : bindingResult.getFieldErrors()) {
@@ -72,12 +73,30 @@ public class BookApiController { // 컴포지션 = has 관계
     @DeleteMapping("/api/v1/book/{id}")
     public ResponseEntity<?> deleteBook(@PathVariable Long id) {
         bookService.책삭제하기(id);
-        return new ResponseEntity<>(CMRespDto.builder().code(1).msg("글 삭제성공 성공").body(null).build(),
+        return new ResponseEntity<>(CMRespDto.builder().code(1).msg("글 삭제 성공").body(null).build(),
                 HttpStatus.OK); // 200 = ok;
     }
 
     // 5. 책수정하기
-    public ResponseEntity<?> updateBook() {
-        return null;
+    @PutMapping("/api/v1/book/{id}")
+    public ResponseEntity<?> updateBook(@PathVariable Long id, @RequestBody @Valid BookSaveReqDto bookSaveReqDto,
+                                        BindingResult bindingResult) {
+
+        // AOP 처리하는게 제일 좋음
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errorMap = new HashMap<>();
+            for (FieldError fe : bindingResult.getFieldErrors()) {
+                errorMap.put(fe.getField(), fe.getDefaultMessage());
+            }
+            System.out.println("=====================================");
+            System.out.println(errorMap.toString());
+            System.out.println("=====================================");
+
+            throw new RuntimeException(errorMap.toString());
+        }
+
+        BookRespDto bookRespDto = bookService.책수정하기(id, bookSaveReqDto);
+        return new ResponseEntity<>(CMRespDto.builder().code(1).msg("글 수정 성공").body(bookRespDto).build(),
+                HttpStatus.OK); // 200 = ok
     }
 }
