@@ -5,10 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import site.metacoding.junitproject.service.BookService;
 import site.metacoding.junitproject.web.dto.response.BookListRespDto;
 import site.metacoding.junitproject.web.dto.response.BookRespDto;
@@ -48,22 +45,35 @@ public class BookApiController { // 컴포지션 = has 관계
                 HttpStatus.CREATED); // 201 = insert
     }
 
+    @PostMapping("/api/v2/book")
+    public ResponseEntity<?> saveBookV2(@RequestBody BookSaveReqDto bookSaveReqDto, BindingResult bindingResult) {
+        BookRespDto bookRespDto = bookService.책등록하기(bookSaveReqDto);
+        return new ResponseEntity<>(CMRespDto.builder().code(1).msg("글 저장 성공").body(bookRespDto).build(),
+                HttpStatus.CREATED); // 201 = insert
+    }
+
     // 2. 책목록보기
     @GetMapping("/api/v1/book")
     public ResponseEntity<?> getBookList() {
         BookListRespDto bookListRespDto = bookService.책목록보기();
-        return new ResponseEntity<>(CMRespDto.builder().code(1).msg("글 저장 성공").body(bookListRespDto).build(),
+        return new ResponseEntity<>(CMRespDto.builder().code(1).msg("글 목록보기 성공").body(bookListRespDto).build(),
                 HttpStatus.OK); // 200 = ok;
     }
 
     // 3. 책한건보기
-    public ResponseEntity<?> getBook() {
-        return null;
+    @GetMapping("/api/v1/book/{id}")
+    public ResponseEntity<?> getBook(@PathVariable Long id) {
+        BookRespDto bookRespDto = bookService.책한건보기(id);
+        return new ResponseEntity<>(CMRespDto.builder().code(1).msg("글 한건보기 성공").body(bookRespDto).build(),
+                HttpStatus.OK); // 200 = ok;
     }
 
     // 4. 책삭제하기
-    public ResponseEntity<?> deleteBook() {
-        return null;
+    @DeleteMapping("/api/v1/book/{id}")
+    public ResponseEntity<?> deleteBook(@PathVariable Long id) {
+        bookService.책삭제하기(id);
+        return new ResponseEntity<>(CMRespDto.builder().code(1).msg("글 삭제성공 성공").body(null).build(),
+                HttpStatus.OK); // 200 = ok;
     }
 
     // 5. 책수정하기
