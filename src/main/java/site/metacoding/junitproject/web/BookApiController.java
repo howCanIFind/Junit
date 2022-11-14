@@ -39,8 +39,7 @@ public class BookApiController { // 컴포지션 = has 관계
             System.out.println(errorMap.toString());
             System.out.println("=====================================");
 
-            return new ResponseEntity<>(CMRespDto.builder().code(-1).msg(errorMap.toString()).body(bookRespDto).build(),
-                    HttpStatus.BAD_REQUEST); // 400 = 요청이 잘못됨됨
+            throw new RuntimeException(errorMap.toString());
         }
         return new ResponseEntity<>(CMRespDto.builder().code(1).msg("글 저장 성공").body(bookRespDto).build(),
                 HttpStatus.CREATED); // 201 = insert
