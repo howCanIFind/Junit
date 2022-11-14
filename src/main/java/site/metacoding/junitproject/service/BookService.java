@@ -25,7 +25,8 @@ public class BookService {
     @Transactional
     public BookRespDto 책등록하기(BookSaveReqDto dto) {
         Book bookPS = bookRepository.save(dto.toEntity());
-        if (bookPS != null) {
+        System.out.println("bookPS = " + bookPS);
+        if (bookPS == null) {
             if (!mailSender.send()) {
                 throw new RuntimeException("메일이 전송되지 않았습니다.");
             }
