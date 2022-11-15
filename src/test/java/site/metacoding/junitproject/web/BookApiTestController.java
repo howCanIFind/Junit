@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import site.metacoding.junitproject.domain.Book;
 import site.metacoding.junitproject.domain.BookRepository;
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.*;
 
 // 종합테스트 (C, S, R)
 // 컨트롤러만 테스트하는 것이 아님
+@ActiveProfiles("dev")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BookApiTestController {
 
@@ -48,6 +50,27 @@ public class BookApiTestController {
                 .author(author)
                 .build();
         bookRepository.save(book);
+    }
+
+    @Sql("classpath:db/tableInit.sql")
+    @Test
+    public void updateBook_test() throws Exception {
+        // given
+        Integer id = 1;
+        BookSaveReqDto bookSaveReqDto = new BookSaveReqDto();
+        bookSaveReqDto.setTitle("spring");
+        bookSaveReqDto.setAuthor("author");
+
+        String body = om.writeValueAsString(bookSaveReqDto);
+
+        // when
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+        ResponseEntity<String> response = rt.exchange("/api/v1/book/" + id, HttpMethod.PUT, request, String.class);
+
+        // then
+        DocumentContext dc = JsonPath.parse(response.getBody());
+        String title = dc.read("$.body.title");
+        assertThat(title).isEqualTo("spring");
     }
 
     @Test
