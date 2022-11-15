@@ -52,12 +52,30 @@ public class BookApiTestController {
 
     @Sql("classpath:db/tableInit.sql")
     @Test
+    public void getBookOne_test() {
+        // given
+        Integer id = 1;
+
+        // when
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = rt.exchange("/api/v1/book/" + id, HttpMethod.GET, request, String.class);
+
+        // then
+        DocumentContext dc = JsonPath.parse(response.getBody());
+        Integer code = dc.read("$.code");
+        String title = dc.read("$.body.title");
+
+        assertThat(code).isEqualTo(1);
+        assertThat(title).isEqualTo("junit");
+    }
+
+    @Sql("classpath:db/tableInit.sql")
+    @Test
     public void getBook_test() {
         // given
 
         // when
         HttpEntity<String> request = new HttpEntity<>(null, headers);
-
         ResponseEntity<String> response = rt.exchange("/api/v1/book", HttpMethod.GET, request, String.class);
 
         // then
@@ -83,7 +101,6 @@ public class BookApiTestController {
 
         // when
         HttpEntity<String> request = new HttpEntity<>(body, headers);
-
         ResponseEntity<String> response = rt.exchange("/api/v1/book", HttpMethod.POST, request, String.class);
 
         // then
